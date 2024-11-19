@@ -1,3 +1,7 @@
+## 0.33.1
+
+- Fixed example docs
+
 ## 0.33.0
 
 - Fixed error: 'when' expression must be exhaustive, add necessary 'is Pending', 'is Successful' branches or 'else' branch instead
