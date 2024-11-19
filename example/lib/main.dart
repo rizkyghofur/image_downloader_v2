@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:image_downloader/image_downloader.dart';
+import 'package:image_downloader/image_downloader_v2.dart';
 
 void main() => runApp(MyApp());
 
