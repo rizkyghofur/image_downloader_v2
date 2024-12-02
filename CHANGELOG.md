@@ -1,3 +1,7 @@
+## 0.33.2
+
+- Fixed github link
+
 ## 0.33.1
 
 - Fixed example docs

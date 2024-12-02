@@ -1,7 +1,7 @@
 name: image_downloader_v2
 description: Flutter plugin that downloads images on the Internet and saves them on device.
-version: 0.33.1
-homepage: https://github.com/rizkyghofur/image_downloader
+version: 0.33.2
+homepage: https://github.com/rizkyghofur/image_downloader_v2
 
 environment:
   sdk: ">=2.19.0 <4.0.0"
