@@ -1,3 +1,9 @@
+## 0.33.3
+
+- upgraded compileSdk to 34
+- updated example folder
+- fixed deprecated registrar in plugin (kotlin code)
+
 ## 0.33.2
 
 - Fixed github link

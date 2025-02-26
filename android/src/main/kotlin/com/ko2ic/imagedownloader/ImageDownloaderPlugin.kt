@@ -36,18 +36,8 @@ import java.util.*
 import kotlin.random.Random
 
 class ImageDownloaderPlugin : FlutterPlugin, ActivityAware, MethodCallHandler {
-    companion object {
-        @JvmStatic
-        fun registerWith(registrar: Registrar) {
-            val activity = registrar.activity() ?: return
-            val context = registrar.context()
-            val applicationContext = context.applicationContext
-            val pluginInstance = ImageDownloaderPlugin()
-            pluginInstance.setup(
-                registrar.messenger(), applicationContext, activity, registrar, null
-            )
-        }
 
+    companion object {
         private const val CHANNEL = "plugins.ko2ic.com/image_downloader"
         private const val LOGGER_TAG = "image_downloader"
     }
@@ -61,20 +51,19 @@ class ImageDownloaderPlugin : FlutterPlugin, ActivityAware, MethodCallHandler {
 
     override fun onAttachedToEngine(binding: FlutterPlugin.FlutterPluginBinding) {
         pluginBinding = binding
+        applicationContext = binding.applicationContext
+        channel = MethodChannel(binding.binaryMessenger, CHANNEL)
+        channel.setMethodCallHandler(this)
     }
 
     override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
         tearDown()
     }
 
-    override fun onAttachedToActivity(activityPluginBinding: ActivityPluginBinding) {
-        setup(
-            pluginBinding.binaryMessenger,
-            pluginBinding.applicationContext,
-            activityPluginBinding.activity,
-            null,
-            activityPluginBinding
-        )
+    override fun onAttachedToActivity(binding: ActivityPluginBinding) {
+        activityBinding = binding
+        permissionListener = ImageDownloaderPermissionListener(binding.activity)
+        binding.addRequestPermissionsResultListener(permissionListener)
     }
 
     override fun onDetachedFromActivity() {
@@ -89,28 +78,6 @@ class ImageDownloaderPlugin : FlutterPlugin, ActivityAware, MethodCallHandler {
         onAttachedToActivity(binding)
     }
 
-    private fun setup(
-        messenger: BinaryMessenger,
-        applicationContext: Context,
-        activity: Activity,
-        registrar: Registrar?,
-        activityBinding: ActivityPluginBinding?
-    ) {
-        this.applicationContext = applicationContext
-        channel = MethodChannel(messenger, CHANNEL)
-        channel.setMethodCallHandler(this)
-        permissionListener = ImageDownloaderPermissionListener(activity)
-
-        if (registrar != null) {
-            // V1 embedding setup for activity listeners.
-            registrar.addRequestPermissionsResultListener(permissionListener)
-        } else {
-            // V2 embedding setup for activity listeners.
-            this.activityBinding = activityBinding
-            this.activityBinding?.addRequestPermissionsResultListener(permissionListener)
-        }
-    }
-
     private fun tearDown() {
         activityBinding?.removeRequestPermissionsResultListener(permissionListener)
         channel.setMethodCallHandler(null)
@@ -118,7 +85,6 @@ class ImageDownloaderPlugin : FlutterPlugin, ActivityAware, MethodCallHandler {
     }
 
     private var inPublicDir: Boolean = true
-
     private var callback: CallbackImpl? = null
 
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
@@ -144,7 +110,6 @@ class ImageDownloaderPlugin : FlutterPlugin, ActivityAware, MethodCallHandler {
             "open" -> {
                 open(call, result)
             }
-
             "findPath" -> {
                 val imageId = call.argument<String>("imageId")
                     ?: throw IllegalArgumentException("imageId is required.")

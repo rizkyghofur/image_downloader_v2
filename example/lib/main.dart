@@ -215,6 +215,7 @@ class _MyAppState extends State<MyApp> {
           }
 
           print(error);
+          return 'error';
         }).timeout(Duration(seconds: 10), onTimeout: () {
           print("timeout");
           return;
