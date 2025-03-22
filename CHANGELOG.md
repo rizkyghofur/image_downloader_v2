@@ -1,3 +1,7 @@
+## 0.33.4
+
+- changed podspec name
+
 ## 0.33.3
 
 - upgraded compileSdk to 34
